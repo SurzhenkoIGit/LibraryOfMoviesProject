@@ -25,6 +25,8 @@ namespace LibraryOfMoviesProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly HashSet<int> _allowedGenreIds = new HashSet<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+
         private DispatcherTimer _notificationTimer;
 
         private KinopoiskService _kinopoiskService;
@@ -81,7 +83,7 @@ namespace LibraryOfMoviesProject
 
             if (_isNavCollapsed)
             {
-                NavColumn.Width = new GridLength(80);
+                NavColumn.Width = new GridLength(70);
 
                 NameText.Visibility = Visibility.Collapsed;
                 HomeText.Visibility = Visibility.Collapsed;
@@ -252,7 +254,14 @@ namespace LibraryOfMoviesProject
 
         private void GenreButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadGenresAsync();
+            MovieListView.Visibility = Visibility.Collapsed;
+            MovieDetailsView.Visibility = Visibility.Collapsed;
+            GenreView.Visibility = Visibility.Visible;
+
+            if (GenreItemsControl.ItemsSource == null)
+            {
+                LoadGenresAsync();
+            }
         }
 
         private async void FavouriteButton_Click(object sender, RoutedEventArgs e)
@@ -296,16 +305,27 @@ namespace LibraryOfMoviesProject
             try
             {
                 var filters = await _kinopoiskService.GetFiltersAsync();
-                var genres = filters["genres"].Select(g => g["genre"].ToString());
 
-                ShowNotification("Доступные жанры:\n\n" + string.Join("\n", genres));
+                var genresList = filters["genres"]
+                    .Where(g => _allowedGenreIds.Contains((int)g["id"]))
+                    .Select(g => {
+                        var genreName = g["genre"].ToString();
 
-                _movieCollection.Clear();
+                        return new GenreViewModel
+                        {
+                            Id = (int)g["id"],
+                            Name = genreName,
+                            ImagePath = $"/Pictures/Genres/{genreName.ToLower()}.jpg"
+                        };
+                    })
+                    .OrderBy(g => g.Name)
+                    .ToList();
+
+                GenreItemsControl.ItemsSource = genresList;
             }
             catch (Exception ex)
             {
-                _movieCollection.Clear();
-                ShowNotification($"Произошла ошибка: {ex.Message}");
+                ShowNotification($"Не удалось загрузить список жанров: {ex.Message}");
             }
         }
 

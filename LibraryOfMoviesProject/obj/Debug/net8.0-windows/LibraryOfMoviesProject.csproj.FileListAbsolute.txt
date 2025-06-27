@@ -69,10 +69,10 @@ C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.AssemblyInfoInputs.cache
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.AssemblyInfo.cs
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.csproj.CoreCompileInputs.cache
+C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.sourcelink.json
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryO.7C7C3883.Up2Date
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.dll
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\refint\LibraryOfMoviesProject.dll
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.pdb
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.genruntimeconfig.cache
 C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\ref\LibraryOfMoviesProject.dll
-C:\Users\surzhenko_i\source\repos\LibraryOfMoviesProject\LibraryOfMoviesProject\obj\Debug\net8.0-windows\LibraryOfMoviesProject.sourcelink.json
