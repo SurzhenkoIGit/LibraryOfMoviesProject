@@ -32,7 +32,7 @@
     <Resource Include="Pictures\GenreIcon.png" />
     <Resource Include="Pictures\HomeIcon.png" />
     <Resource Include="Pictures\LoupeIcon.png" />
-    <Resource Include="Pictures\movieIcon.png" />
+    <Resource Include="Pictures\MovieIcon.png" />
     <Resource Include="Pictures\StarIcon.png" />
     <Resource Include="Pictures\ToggleIcon.png" />
     <Resource Include="Pictures\TvIcon.png" />

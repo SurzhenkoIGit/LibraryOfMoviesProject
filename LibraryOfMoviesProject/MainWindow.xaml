@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LibraryOfMoviesProject"
         xmlns:converters="clr-namespace:LibraryOfMoviesProject.Converters"
         mc:Ignorable="d"
-        Title="KinoTV" Height="450" Width="800"
+        Title="KinoTV" Height="768" Width="1024"
         WindowStartupLocation="CenterScreen"
         Background="#FF1E1E1E">
     <Window.Resources>
@@ -66,7 +66,7 @@
 
         <Style x:Key="filterComboBox" TargetType="ComboBox">
             <Setter Property="Background" Value="#FF1E1E1E"/>
-            <Setter Property="Foreground" Value="#FFDDDDDD"/>
+            <Setter Property="Foreground" Value="#FF121212"/>
             <Setter Property="BorderBrush" Value="#FF333333"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,5"/>
@@ -116,7 +116,7 @@
                 </Button>
                 <Button x:Name="MovieButton" Click="MovieButton_Click" Style="{StaticResource NavButton}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Pictures/movieIcon.png"/>
+                        <Image Source="/Pictures/MovieIcon.png"/>
                         <TextBlock x:Name="MovieText" Text="Фильмы" VerticalAlignment="Center" Margin="40,0,0,0"/>
                     </StackPanel>
                 </Button>
@@ -144,7 +144,7 @@
         <DockPanel x:Name="ContentArea" Grid.Column="1" Margin="20,10,20,0">
             <Border DockPanel.Dock="Top" Padding="10" Margin="0,0,0,10" Background="#FF181818" CornerRadius="8">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBox x:Name="SearchTextBox" Width="300" Style="{StaticResource FilterTextBox}" Tag="Поиск по названию"/>
+                    <TextBox x:Name="SearchTextBox" Width="200" Style="{StaticResource FilterTextBox}" Tag="Поиск по названию"/>
                     <Button x:Name="SearchButton" Click="SearchButton_Click" Margin="10,0,0,0" Padding="10,5">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Pictures/LoupeIcon.png" Width="16" Height="16"/>
@@ -152,16 +152,14 @@
                         </StackPanel>
                     </Button>
 
-                    <Separator Margin="20,0" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
-
-                    <TextBlock Text="Страна:" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="#FFAAAAAA"/>
-                    <ComboBox x:Name="CountryComboBox" Width="150" SelectionChanged="CountryCombobox_SelectionChanged" Style="{StaticResource filterComboBox}"/>
+                    <TextBlock Text="Страна" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="#FFAAAAAA"/>
+                    <ComboBox x:Name="CountryComboBox" Width="150" SelectionChanged="CountryCombobox_SelectionChanged" Style="{StaticResource filterComboBox}" BorderBrush="#FF2B2B2B"/>
 
                     <TextBlock Text="Год" VerticalAlignment="Center" Margin="15,0,5,0" Foreground="#FFAAAAAA"/>
                     <TextBox x:Name="YearTextBox" Width="80" KeyDown="YearTextBox_KeyDown" Style="{StaticResource FilterTextBox}"/>
 
 
-                    <ComboBox x:Name="SortComboBox" Width="180" SelectedIndex="0" SelectionChanged="SortComboBox_SelectionChanged" Style="{StaticResource filterComboBox}">
+                    <ComboBox x:Name="SortComboBox" Width="160" SelectedIndex="0" SelectionChanged="SortComboBox_SelectionChanged" Style="{StaticResource filterComboBox}">
                         <ComboBoxItem Content="Сортировать по..." IsEnabled="False"/>
                         <ComboBoxItem Content="рейтинг" Tag="RATING"/>
                     </ComboBox>
@@ -180,22 +178,31 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Click="MovieItem_Click" Style="{StaticResource MovieCardButton}">
+                                    <Grid>
+                                        <Border CornerRadius="5" ClipToBounds="True">
+                                            <StackPanel>
+                                                <Border CornerRadius="5" ClipToBounds="True">
+                                                    <Image Source="{Binding PosterUrl}" Height="260" Stretch="UniformToFill"/>
+                                                </Border>
 
-                                    <Border CornerRadius="5" ClipToBounds="True">
-                                        <StackPanel>
-                                            <Border CornerRadius="5" ClipToBounds="True">
-                                                <Image Source="{Binding PosterUrl}" Height="260" Stretch="UniformToFill"/>
-                                            </Border>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15" Foreground="White" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
 
-                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15" Foreground="White" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0" >
+                                                    <TextBlock Text="⭐" FontSize="20" VerticalAlignment="Center"/>
 
-                                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0" >
-                                                <TextBlock Text="⭐" FontSize="18" VerticalAlignment="Center"/>
-
-                                                <TextBlock Text="{Binding Rating}" Margin="5,0,0,0" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>         
+                                                    <TextBlock Text="{Binding Rating}" Margin="5,0,0,0" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                </StackPanel>
                                             </StackPanel>
-                                        </StackPanel>
-                                    </Border>
+                                        </Border>
+
+                                        <Button x:Name="CardFavoriteButton" Click="CardFavoriteButton_Click" Loaded="CardFavoriteButton_Loaded" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,5,0" Width="32" Height="32" Background="#80000000" BorderThickness="0" ToolTip="Добавить/удалить" Content="☆" Foreground="White" FontSize="20">
+                                            <Button.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="16"/>
+                                                </Style>
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -240,5 +247,30 @@
                 </Border>
             </Grid>
         </DockPanel>
+
+        <Border x:Name="NotificationBorder"
+                Visibility="Collapsed"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,30"
+                Background="#333333"
+                BorderBrush="#555555"
+                BorderThickness="1"
+                CornerRadius="5"
+                Padding="20,10"
+                Panel.ZIndex="99">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="NotificationText" Foreground="White" VerticalAlignment="Center"/>
+                <Button x:Name="NotificationCloseButton"
+                        Content="✕"
+                        Click="CloseNotification_Click"
+                        Foreground="White"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="15,0,0,0"
+                        FontWeight="Bold"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

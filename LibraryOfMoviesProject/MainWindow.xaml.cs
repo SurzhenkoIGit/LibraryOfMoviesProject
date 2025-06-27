@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace LibraryOfMoviesProject
 {
@@ -24,6 +25,8 @@ namespace LibraryOfMoviesProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer _notificationTimer;
+
         private KinopoiskService _kinopoiskService;
         private int _currentPage = 1;
         private bool _isNavCollapsed = false;
@@ -34,9 +37,11 @@ namespace LibraryOfMoviesProject
         private int? _currentCountryId = null;
         private int? _currentYear = null;
         private string _currentContentType = "TOP_POPULAR";
+        private const string _favoritesContentType = "FAVORITES";
 
         private int? _currentlyViewiedFilmId = null;
         private JObject _currentFilmDetails = null;
+        private HashSet<int> _favoriteIds = new HashSet<int>();
 
         private readonly ObservableCollection<MovieViewModel> _movieCollection = new ObservableCollection<MovieViewModel>();
 
@@ -64,6 +69,10 @@ namespace LibraryOfMoviesProject
 
             LoadCountryFilterAsync();
             //LoadMoviesAsync(clearList: true);
+
+            _notificationTimer = new DispatcherTimer();
+            _notificationTimer.Interval = TimeSpan.FromSeconds(5);
+            _notificationTimer.Tick += NotificationTimer_Tick;
         }
 
         private void ToggleNavButton_Click(object sender, RoutedEventArgs e)
@@ -113,6 +122,11 @@ namespace LibraryOfMoviesProject
 
             try
             {
+                using(var context = new ApplicationDataContext())
+                {
+                    _favoriteIds = (await context.Favorites.Select(f => f.KinopoiskId).ToListAsync()).ToHashSet();
+                }
+
                 JObject movieResponse;
                 JArray moviesJson;
 
@@ -164,7 +178,7 @@ namespace LibraryOfMoviesProject
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                ShowNotification($"Ошибка: {ex.Message}");
             }
         }
 
@@ -192,7 +206,7 @@ namespace LibraryOfMoviesProject
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось загрузить список стран: {ex.Message}");
+                ShowNotification($"Не удалось загрузить список стран: {ex.Message}");
             }
         }
 
@@ -243,6 +257,8 @@ namespace LibraryOfMoviesProject
 
         private async void FavouriteButton_Click(object sender, RoutedEventArgs e)
         {
+            _currentContentType = _favoritesContentType;
+
             MovieDetailsView.Visibility = Visibility.Collapsed;
             MovieListView.Visibility = Visibility.Visible;
 
@@ -254,7 +270,10 @@ namespace LibraryOfMoviesProject
 
                 if (!favouriteMovies.Any())
                 {
-                    MessageBox.Show("Ваш список избранных фильмов пуст. Выберите фильм из предложенных и добавльте в избранное!");
+                    if (e != null && e.OriginalSource != null)
+                    {
+                        ShowNotification("Ваш список избранного пуст.");
+                    }
                     return;
                 }
 
@@ -279,14 +298,14 @@ namespace LibraryOfMoviesProject
                 var filters = await _kinopoiskService.GetFiltersAsync();
                 var genres = filters["genres"].Select(g => g["genre"].ToString());
 
-                MessageBox.Show("Доступные жанры:\n\n" + string.Join("\n", genres), "Жанры");
+                ShowNotification("Доступные жанры:\n\n" + string.Join("\n", genres));
 
                 _movieCollection.Clear();
             }
             catch (Exception ex)
             {
                 _movieCollection.Clear();
-                MessageBox.Show($"Произошла ошибка: {ex.Message}");
+                ShowNotification($"Произошла ошибка: {ex.Message}");
             }
         }
 
@@ -300,8 +319,13 @@ namespace LibraryOfMoviesProject
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_currentContentType == _favoritesContentType)
+                FavouriteButton_Click(this, new RoutedEventArgs());
+
+            
             MovieDetailsView.Visibility = Visibility.Collapsed;
             MovieListView.Visibility = Visibility.Visible;
+
             _currentlyViewiedFilmId = null;
             _currentFilmDetails = null;
         }
@@ -340,12 +364,15 @@ namespace LibraryOfMoviesProject
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось загрузить информацию по фильму. Ошибка {ex.Message}");
+                ShowNotification($"Не удалось загрузить информацию по фильму. Ошибка {ex.Message}");
             }
         }
 
         private async void MovieListView_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
+            if (_currentContentType == _favoritesContentType)
+                return;
+
             var scrollViewer = sender as ScrollViewer;
             if (scrollViewer == null)
                 return;
@@ -362,7 +389,7 @@ namespace LibraryOfMoviesProject
         {
             if (_currentlyViewiedFilmId == null || _currentFilmDetails == null)
             {
-                MessageBox.Show("Информация о фильме не загружена!");
+                ShowNotification("Информация о фильме не загружена!");
                 return;
             }
 
@@ -372,7 +399,7 @@ namespace LibraryOfMoviesProject
 
                 if (dataExists)
                 {
-                    MessageBox.Show("Фильм уже добавлен в избранное");
+                    ShowNotification("Фильм уже добавлен в избранное");
                     return;
                 }
 
@@ -391,7 +418,7 @@ namespace LibraryOfMoviesProject
                 context.Favorites.Add(favouriteModel);
                 await context.SaveChangesAsync();
 
-                MessageBox.Show($"Фильм {favouriteModel.Title} добавлен в избранное!");
+                ShowNotification($"Фильм {favouriteModel.Title} добавлен в избранное!");
             }
         }
 
@@ -432,26 +459,112 @@ namespace LibraryOfMoviesProject
         {
             try
             {
-                using(var context = new ApplicationDataContext())
+                if (_currentlyViewiedFilmId == null) return;
+
+                using (var context = new ApplicationDataContext())
                 {
-                    var favourite = await context.Favorites.FirstOrDefaultAsync(f => f.KinopoiskId == _currentlyViewiedFilmId);
+                    var favoriteToRemove = await context.Favorites.FirstOrDefaultAsync(f => f.KinopoiskId == _currentlyViewiedFilmId.Value);
 
-                    if(favourite != null)
+                    if (favoriteToRemove != null)
                     {
-                        context.Favorites.Remove(favourite);
+                        context.Favorites.Remove(favoriteToRemove);
                         await context.SaveChangesAsync();
+                        ShowNotification("Фильм удален из избранного.");
 
-                        MessageBox.Show("Фильм был удален из избранного!");
-
-                        MovieDetailsView.Visibility = Visibility.Collapsed;
-                        MovieListView.Visibility = Visibility.Visible;
+                        AddToFavoritesButton.Visibility = Visibility.Visible;
+                        DeleteFavouritesButton.Visibility = Visibility.Collapsed;
                     }
                 }
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"Ошибка удаления: {ex.Message}");
+                ShowNotification($"Ошибка удаления: {ex.Message}");
             }
+        }
+
+        private async void CardFavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            if(sender is Button button && button.DataContext is MovieViewModel movie)
+            {
+                using(var context = new ApplicationDataContext())
+                {
+                    var favoriteDb = await context.Favorites.FirstOrDefaultAsync(f => f.KinopoiskId == movie.Id);
+
+                    if (favoriteDb != null)
+                    {
+                        context.Favorites.Remove(favoriteDb);
+                        await context.SaveChangesAsync();
+
+                        button.Content = "☆";
+                        button.Foreground = Brushes.White;
+                        _favoriteIds.Remove(movie.Id);
+                        ShowNotification("Фильм удален из избранного!");
+                    }
+                    else
+                    {
+                        var details = await _kinopoiskService.GetFilmByIdAsync(movie.Id);
+                        var favorite = new Favourite
+                        {
+                            KinopoiskId = movie.Id,
+                            Title = details["nameRu"]?.ToString() ?? details["nameOriginal"]?.ToString(),
+                            PosterUrl = details["posterUrlPreview"].ToString(),
+                            Rating = double.TryParse(details["ratingKinopoisk"]?.ToString(), out var r) ? r : 0.0,
+                            Year = details["year"].ToObject<int>(),
+                            Genres = string.Join(", ", details["genres"].Select(g => g["genre"]))
+                        };
+                        context.Favorites.Add(favorite);
+                        await context.SaveChangesAsync();
+                        
+                        button.Content = "★";
+                        button.Foreground = Brushes.Gold;
+                        _favoriteIds.Add(favorite.KinopoiskId);
+                        ShowNotification("Фильм добавлен в избранное!");
+                    }
+                }
+            }
+        }
+
+        private void CardFavoriteButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (sender is Button button && button.DataContext is MovieViewModel movie)
+            {
+                if (_favoriteIds.Contains(movie.Id))
+                {
+                    button.Content = "★";
+                    button.Foreground = Brushes.Gold;
+                }
+                else
+                {
+                    button.Content = "☆";
+                    button.Foreground = Brushes.White;
+                }
+            }
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationText.Text = message;
+            NotificationBorder.Visibility = Visibility.Visible;
+
+            
+            _notificationTimer.Stop();
+            _notificationTimer.Start();
+        }
+
+        // Этот метод сработает, когда таймер закончится
+        private void NotificationTimer_Tick(object sender, EventArgs e)
+        {
+            _notificationTimer.Stop();
+            NotificationBorder.Visibility = Visibility.Collapsed;
+        }
+
+        private void CloseNotification_Click(object sender, RoutedEventArgs e)
+        {
+            _notificationTimer.Stop();
+            NotificationBorder.Visibility = Visibility.Collapsed;
         }
     }
 }
