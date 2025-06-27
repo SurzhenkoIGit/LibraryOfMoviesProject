@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Pictures\GenreIcon.png" />
+    <None Remove="Pictures\HomeIcon.png" />
+    <None Remove="Pictures\LoupeIcon.png" />
+    <None Remove="Pictures\movieIcon.png" />
+    <None Remove="Pictures\StarIcon.png" />
+    <None Remove="Pictures\ToggleIcon.png" />
+    <None Remove="Pictures\TvIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Pictures\GenreIcon.png" />
+    <Resource Include="Pictures\HomeIcon.png" />
+    <Resource Include="Pictures\LoupeIcon.png" />
+    <Resource Include="Pictures\movieIcon.png" />
+    <Resource Include="Pictures\StarIcon.png" />
+    <Resource Include="Pictures\ToggleIcon.png" />
+    <Resource Include="Pictures\TvIcon.png" />
+  </ItemGroup>
+
+</Project>
