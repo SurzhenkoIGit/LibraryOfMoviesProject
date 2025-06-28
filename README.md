@@ -35,4 +35,4 @@ Apply to MainWindow.x...
 3. Запуск:
 Открыть решение LibraryOfMoviesProject.sln в среде Visual Studio.
 Собрать проект и запустить (клавиша F5).
-Или открыть исполняемый файл по пути LibraryOfMoviesProject-main\LibraryOfMoviesProject\bin\Debug\net8.0-windows
+Или открыть исполняемый файл по пути LibraryOfMoviesProject\bin\Debug\net8.0-windows
