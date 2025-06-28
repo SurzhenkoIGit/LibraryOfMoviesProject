@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Pictures\GenreIcon.png" />
+    <None Remove="Pictures\Genres\аниме.png" />
+    <None Remove="Pictures\Genres\биография.png" />
+    <None Remove="Pictures\Genres\боевик.png" />
+    <None Remove="Pictures\Genres\вестерн.png" />
+    <None Remove="Pictures\Genres\военный.png" />
+    <None Remove="Pictures\Genres\детектив.png" />
+    <None Remove="Pictures\Genres\документальный.png" />
+    <None Remove="Pictures\Genres\драма.png" />
+    <None Remove="Pictures\Genres\история.png" />
+    <None Remove="Pictures\Genres\комедия.png" />
+    <None Remove="Pictures\Genres\короткометражка.png" />
+    <None Remove="Pictures\Genres\криминал.png" />
+    <None Remove="Pictures\Genres\мелодрама.png" />
+    <None Remove="Pictures\Genres\музыка.png" />
+    <None Remove="Pictures\Genres\мультфильм.png" />
+    <None Remove="Pictures\Genres\мюзикл.png" />
+    <None Remove="Pictures\Genres\приключения.png" />
+    <None Remove="Pictures\Genres\семейный.png" />
+    <None Remove="Pictures\Genres\спорт.png" />
+    <None Remove="Pictures\Genres\триллер.png" />
+    <None Remove="Pictures\Genres\ужасы.png" />
+    <None Remove="Pictures\Genres\фантастика.png" />
+    <None Remove="Pictures\Genres\фильм-нуар.png" />
+    <None Remove="Pictures\Genres\фэнтези.png" />
+    <None Remove="Pictures\HomeIcon.png" />
+    <None Remove="Pictures\LoupeIcon.png" />
+    <None Remove="Pictures\movieIcon.png" />
+    <None Remove="Pictures\StarIcon.png" />
+    <None Remove="Pictures\ToggleIcon.png" />
+    <None Remove="Pictures\TvIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Pictures\GenreIcon.png" />
+    <Resource Include="Pictures\Genres\аниме.png" />
+    <Resource Include="Pictures\Genres\биография.png" />
+    <Resource Include="Pictures\Genres\боевик.png" />
+    <Resource Include="Pictures\Genres\вестерн.png" />
+    <Resource Include="Pictures\Genres\военный.png" />
+    <Resource Include="Pictures\Genres\детектив.png" />
+    <Resource Include="Pictures\Genres\документальный.png" />
+    <Resource Include="Pictures\Genres\драма.png" />
+    <Resource Include="Pictures\Genres\история.png" />
+    <Resource Include="Pictures\Genres\комедия.png" />
+    <Resource Include="Pictures\Genres\короткометражка.png" />
+    <Resource Include="Pictures\Genres\криминал.png" />
+    <Resource Include="Pictures\Genres\мелодрама.png" />
+    <Resource Include="Pictures\Genres\музыка.png" />
+    <Resource Include="Pictures\Genres\мультфильм.png" />
+    <Resource Include="Pictures\Genres\мюзикл.png" />
+    <Resource Include="Pictures\Genres\приключения.png" />
+    <Resource Include="Pictures\Genres\семейный.png" />
+    <Resource Include="Pictures\Genres\спорт.png" />
+    <Resource Include="Pictures\Genres\триллер.png" />
+    <Resource Include="Pictures\Genres\ужасы.png" />
+    <Resource Include="Pictures\Genres\фантастика.png" />
+    <Resource Include="Pictures\Genres\фильм-нуар.png" />
+    <Resource Include="Pictures\Genres\фэнтези.png" />
+    <Resource Include="Pictures\HomeIcon.png" />
+    <Resource Include="Pictures\LoupeIcon.png" />
+    <Resource Include="Pictures\MovieIcon.png" />
+    <Resource Include="Pictures\StarIcon.png" />
+    <Resource Include="Pictures\ToggleIcon.png" />
+    <Resource Include="Pictures\TvIcon.png" />
+  </ItemGroup>
+
+</Project>
