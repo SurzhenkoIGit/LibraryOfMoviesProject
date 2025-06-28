@@ -38,6 +38,7 @@ namespace LibraryOfMoviesProject
         private string _currentOrder = "RATING";
         private int? _currentCountryId = null;
         private int? _currentGenreId = null;
+
         private int? _currentYear = null;
         private string _currentContentType = "TOP_POPULAR";
         private const string _favoritesContentType = "FAVORITES";
@@ -71,7 +72,9 @@ namespace LibraryOfMoviesProject
             MoviesGrid.ItemsSource = _movieCollection;
 
             LoadCountryFilterAsync();
+
             LoadMoviesAsync(clearList: true);
+
 
             _notificationTimer = new DispatcherTimer();
             _notificationTimer.Interval = TimeSpan.FromSeconds(5);
@@ -106,6 +109,7 @@ namespace LibraryOfMoviesProject
             }
         }
 
+
         private async Task LoadMoviesAsync(bool clearList = false)
         {
             if (clearList)
@@ -134,11 +138,13 @@ namespace LibraryOfMoviesProject
 
                     moviesJson = (JArray)movieResponse["films"];
                 }
+
                 else if (_currentGenreId.HasValue)
                 {
                     movieResponse = await _kinopoiskService.GetFilmsByGenreAsync(_currentGenreId.Value, _currentPage, _currentOrder, _currentCountryId, _currentYear);
                     moviesJson = (JArray)movieResponse["items"];
                 }
+
                 else
                 {
                     movieResponse = await _kinopoiskService.GetFilmsAsync(_currentContentType, _currentPage, _currentKeyword, _currentOrder, _currentCountryId, _currentYear);
@@ -197,6 +203,7 @@ namespace LibraryOfMoviesProject
 
                 CountryComboBox.SelectionChanged -= CountryCombobox_SelectionChanged;
 
+
                 CountryComboBox.Items.Clear();
                 
                 CountryComboBox.Items.Add(new ComboBoxItem { Content = "Все страны", Tag = (int?)null });
@@ -210,6 +217,7 @@ namespace LibraryOfMoviesProject
                 CountryComboBox.SelectedIndex = 0;
 
                 CountryComboBox.SelectionChanged += CountryCombobox_SelectionChanged;
+
             }
             catch (Exception ex)
             {
@@ -220,13 +228,7 @@ namespace LibraryOfMoviesProject
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             _currentContentType = "ALL";
-            _currentGenreId = null;
             _currentKeyword = SearchTextBox.Text;
-            
-            MovieListView.Visibility = Visibility.Visible;
-            GenreView.Visibility = Visibility.Collapsed;
-            MovieDetailsView.Visibility = Visibility.Collapsed;
-            
             LoadMoviesAsync(clearList: true);
         }
 
@@ -248,6 +250,7 @@ namespace LibraryOfMoviesProject
             _currentContentType = "TOP_POPULAR";
             _currentKeyword = "";
             SearchTextBox.Text = "";
+
             _currentGenreId = null;
             _currentCountryId = null;
             _currentYear = null;
@@ -267,24 +270,12 @@ namespace LibraryOfMoviesProject
         private void MovieButton_Click(object sender, RoutedEventArgs e)
         {
             _currentContentType = "FILM";
-            _currentGenreId = null;
-
-            MovieListView.Visibility = Visibility.Visible;
-            GenreView.Visibility = Visibility.Collapsed;
-            MovieDetailsView.Visibility = Visibility.Collapsed;
-
             LoadMoviesAsync(clearList: true);
         }
 
         private void SeriesButton_Click(object sender, RoutedEventArgs e)
         {
             _currentContentType = "TV_SERIES";
-            _currentGenreId = null;
-
-            MovieListView.Visibility = Visibility.Visible;
-            GenreView.Visibility = Visibility.Collapsed;
-            MovieDetailsView.Visibility = Visibility.Collapsed;
-
             LoadMoviesAsync(clearList: true);
         }
 
@@ -303,7 +294,9 @@ namespace LibraryOfMoviesProject
         private async void FavouriteButton_Click(object sender, RoutedEventArgs e)
         {
             _currentContentType = _favoritesContentType;
+
             _currentGenreId = null;
+
 
             MovieDetailsView.Visibility = Visibility.Collapsed;
             MovieListView.Visibility = Visibility.Visible;
@@ -352,7 +345,9 @@ namespace LibraryOfMoviesProject
                         {
                             Id = (int)g["id"],
                             Name = genreName,
+
                             ImagePath = $"/Pictures/Genres/{genreName.ToLower()}.png"
+
                         };
                     })
                     .OrderBy(g => g.Name)
@@ -387,6 +382,8 @@ namespace LibraryOfMoviesProject
                 GenreButton_Click(this, new RoutedEventArgs());
                 return;
             }
+                FavouriteButton_Click(this, new RoutedEventArgs());
+
             
             MovieDetailsView.Visibility = Visibility.Collapsed;
             MovieListView.Visibility = Visibility.Visible;
@@ -514,11 +511,14 @@ namespace LibraryOfMoviesProject
                 if (int.TryParse(YearTextBox.Text, out int year))
                 {
                     _currentYear = year;
+
+                    YearTextBox.Text = "";
                 }
                 else 
                 { 
                     _currentYear = null;
                 }
+
 
                 if (_currentContentType == "TOP_POPULAR")
                 {
